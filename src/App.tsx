@@ -9,11 +9,18 @@ export function App() {
   const [despesas, setDespesas] = useState([] as Despesa[]);
   const [nome, setNome] = useState("");
   const [valor, setValor] = useState(0);
+  const [total, setTotal] = useState(0);
 
   function adicionaDespesa() {
+    if (nome.length < 2 || nome.length > 16) {
+      alert("O nome da despesa deve ter entre 2 e 16 caracteres.");
+      return;
+    }
+  
     setDespesas([...despesas, { nome, valor }]);
     setNome("");
     setValor(0);
+    setTotal(total + Number(valor));
   }
 
   function deletaTarefa(indexDeletar: number): void {
@@ -46,8 +53,9 @@ export function App() {
           </li>
         ))}
       </ul>
+      <p>Valor total: R$ {total.toFixed(2)}</p>
     </div>
   );
 }
 
-export default App
+export default App;
