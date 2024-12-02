@@ -1,96 +1,48 @@
 import { useState } from "react";
 
+type Despesa = {
+  nome: string,
+  valor: number
+}
+
 export function App() {
-  // Estado para armazenar tarefas e entrada do usuário
-  const [task, setTask] = useState(''); // Tarefa em edição
-  const [tasks, setTasks] = useState([]); // Lista de tarefas
+  const [despesas, setDespesas] = useState([] as Despesa[]);
+  const [nome, setNome] = useState("");
+  const [valor, setValor] = useState(0);
 
-  // Função para adicionar uma nova tarefa
-  const addTask = () => {
-    if (task.trim() !== '') {
-      setTasks([...tasks, { id: Date.now(), text: task, completed: false }]);
-      setTask(''); // Limpa o campo de entrada
-    }
-  };
+  function adicionaDespesa() {
+    setDespesas([...despesas, { nome, valor }]);
+    setNome("");
+    setValor(0);
+  }
 
-  // Função para alternar entre tarefa concluída e não concluída
-  const toggleComplete = (id) => {
-    const updatedTasks = tasks.map((t) =>
-      t.id === id ? { ...t, completed: !t.completed } : t
-    );
-    setTasks(updatedTasks);
-  };
-
-  // Função para excluir uma tarefa
-  const deleteTask = (id) => {
-    const filteredTasks = tasks.filter((t) => t.id !== id);
-    setTasks(filteredTasks);
-  };
+  function deletaTarefa(indexDeletar: number): void {
+    const nextDespesas = despesas.filter((_, index) => index !== indexDeletar);
+    setDespesas(nextDespesas);
+  }
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      <h1>Lista de Tarefas</h1>
-      
-      {/* Campo de entrada para adicionar tarefas */}
-      <div style={{ marginBottom: '20px' }}>
-        <input
-          type="text"
-          value={task}
-          onChange={(e) => setTask(e.target.value)}
-          placeholder="Digite uma tarefa"
-          style={{ padding: '10px', width: '250px' }}
-        />
-        <button
-          onClick={addTask}
-          style={{
-            padding: '10px',
-            marginLeft: '10px',
-            backgroundColor: '#28a745',
-            color: 'white',
-            border: 'none',
-            cursor: 'pointer',
-          }}
-        >
-          Adicionar
-        </button>
-      </div>
-      
-      {/* Lista de tarefas */}
-      <ul style={{ padding: '0' }}>
-        {tasks.map((t) => (
-          <li
-            key={t.id}
-            style={{
-              listStyle: 'none',
-              marginBottom: '10px',
-              textDecoration: t.completed ? 'line-through' : 'none',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <span
-              onClick={() => toggleComplete(t.id)}
-              style={{
-                cursor: 'pointer',
-                flexGrow: 1,
-                textAlign: 'left',
-                padding: '5px 10px',
-              }}
-            >
-              {t.text}
-            </span>
-            <button
-              onClick={() => deleteTask(t.id)}
-              style={{
-                padding: '5px',
-                backgroundColor: '#dc3545',
-                color: 'white',
-                border: 'none',
-                cursor: 'pointer',
-              }}
-            >
-              Excluir
-            </button>
+    <div>
+      <h1>Gerenciador de Despesas</h1>
+      <input
+        type="text"
+        placeholder="Nome"
+        value={nome}
+        onChange={(e) => setNome(e.target.value)}
+      />
+      <input
+        type="number"
+        placeholder="Valor"
+        value={valor}
+        onChange={(e) => setValor(Number(e.target.value))}
+      />
+      <button onClick={adicionaDespesa}>Adicionar</button>
+
+      <ul>
+        {despesas.map((despesa, index) => (
+          <li key={index}>
+            {despesa.nome} - R$ {despesa.valor.toFixed(2)}{" "}
+            <button onClick={() => deletaTarefa(index)}>Deletar</button>
           </li>
         ))}
       </ul>
